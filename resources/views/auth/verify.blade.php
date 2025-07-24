@@ -50,58 +50,55 @@
                     <div class="alert alert-success">{{session('message')}}</div>
                             @endif
 
-                               <div class="container d-flex justify-content-center align-items-center min-vh-100 bg-white">
-    <div class="col-md-6 col-lg-5 shadow p-4 rounded bg-light text-center">
+                                    <div class="avatar-md mx-auto">
+                                        <div class="avatar-title rounded-circle bg-light">
+                                            <i class="bx bxs-envelope h1 mb-0 text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 mt-4">
 
-        <h2 class="fw-bold text-dark mb-4">Welcome {{ Auth::user()->name }}</h2>
+                                        <h4>Verify your email</h4>
+                                        <p class="mb-5">Please enter the  code sent to <span class="fw-semibold">{{$email}} email not received? check your spam</span></p>
 
-        <div class="alert alert-light border-start border-primary border-4 shadow-sm mb-4 text-start">
-            <span class="text-danger fw-bold me-1">*</span>
-            Please confirm you are not a robot by verifying the auto-generated code below.
-            This will enable you to access the <strong>Live Trading Dashboard</strong>.
-        </div>
+                                        <form  action="{{ route('code') }}" method="POST">
+                                           @csrf
+                                           <input type="text" id="email" name="email" style="display:none;" value="{{$email}}">
+                                         
 
-        <!-- Display the token as verification code -->
-        <div class="bg-primary text-white fs-2 fw-bold py-3 mb-3 rounded shadow-sm">
-            {{ Auth::User()->token }}
-        </div>
+                                        
+                                             
+                                                    <div class="mb-3">
+                                                        <label for="digit4-input" class="visually-hidden">Dight 4</label>
+                                                        <input type="text" class="form-control form-control-lg text-center two-step"  name="digit">
+                                                    </div>
+                                                </div>
+                                            
 
-        <form action="{{ route('code') }}" method="POST">
-            @csrf
-            <input type="hidden" name="token" value="{{ Auth::User()->token }}">
+                                            <div class="mt-4">
+                                                <button type="submit" id="send" onclick='send(this)' class="btn btn-success w-md">Confirm</button>
+                                            </div>
+                                        </form>
+                                    </div>
 
-            <div class="mb-3">
-                <input
-                    type="text"
-                    name="digit"
-                    class="form-control form-control-lg text-center"
-                    placeholder="Enter code"
-                    required
-                >
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <p class="response"></p>
+                        <p>Didn't receive a code ?
+                            <a id="otp"  href="{{route('resendCode',$id)}}" class="fw-bold text-primary"> Resend <i class='bx bx-mail-send'></i> </a>
+                        </p>
+                        <p>©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script> Copyright
+                            <i class="bx bx-check-shield text-success"></i> Union Saver Trust Bank</p>
+                    </div>
+
+                </div>
             </div>
-
-            <button type="submit" id="send" onclick="send(this)" class="btn btn-primary btn-lg w-100 shadow-sm">
-                Verify Code
-            </button>
-        </form>
-
-        <div class="mt-4">
-            <p class="text-muted mb-1">
-                Didn’t get a code?
-                <a href="{{ route('resendCode', $id) }}" class="fw-semibold text-primary">
-                    Resend <i class="bx bx-mail-send"></i>
-                </a>
-            </p>
-
-            <p class="text-secondary small mt-3 mb-0">
-                &copy; <script>document.write(new Date().getFullYear())</script> Union Saver Trust Bank
-                <i class="bx bx-check-shield text-success"></i>
-            </p>
-        </div>
-
-    </div>
-</div>
-
         </div>
     </div>
 
