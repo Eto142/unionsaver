@@ -367,13 +367,13 @@
                                     </div>
                                 </form>
                                 
-                                <div class="text-center mt-4">
+                                {{-- <div class="text-center mt-4">
                                     <p class="text-muted">Didn't receive a code? 
                                         <a href="{{ route('resendCode', $id) }}" class="resend-link" id="resendLink">
                                             <i class="mdi mdi-reload"></i> RESEND CODE
                                         </a>
                                     </p>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                         
@@ -416,138 +416,90 @@
     
     <!-- Verification Script -->
     <script>
-        $(document).ready(function() {
-            // Initialize Bootstrap Toast
-            const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
-            
-            // Auto-focus on the verification code input
-            $('#verificationCode').focus();
-            
-            // Input validation - only allow numbers
-            $('#verificationCode').on('input', function() {
-                this.value = this.value.replace(/[^0-9]/g, '');
-            });
-            
-            // Form submission handler
-            $('#verifyForm').on('submit', function(e) {
-                e.preventDefault();
-                
-                const btn = $('#verifyBtn');
-                const btnText = $('#btnText');
-                const btnSpinner = $('#btnSpinner');
-                const formData = $(this).serialize();
-                
-                // Show loading state
-                btn.prop('disabled', true);
-                btnText.html('VERIFYING... <span class="spinner-track"></span>');
-                
-                // Submit form via AJAX
-                $.ajax({
-                    type: "POST",
-                    url: $(this).attr('action'),
-                    data: formData,
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.redirect) {
-                            // Add success animation before redirect
-                            btnText.html('<i class="mdi mdi-check-circle"></i> VERIFIED!');
-                            btn.removeClass('btn-primary').addClass('btn-success');
-                            
-                            setTimeout(function() {
-                                window.location.href = response.redirect;
-                            }, 1000);
-                        } else if (response.error) {
-                            showError(response.error);
-                        }
-                    },
-                    error: function(xhr) {
-                        const errorMessage = xhr.responseJSON && xhr.responseJSON.message 
-                            ? xhr.responseJSON.message 
-                            : 'An error occurred during verification. Please try again.';
-                        showError(errorMessage);
-                    },
-                    complete: function() {
-                        // Reset button state after 1.5 seconds
-                        setTimeout(function() {
-                            btn.prop('disabled', false);
-                            btnText.text('VERIFY IDENTITY');
-                            btnSpinner.addClass('d-none');
-                        }, 1500);
-                    }
-                });
-            });
-            
-            // Resend link handler
-            $('#resendLink').on('click', function(e) {
-                e.preventDefault();
-                const link = $(this);
-                const originalHtml = link.html();
-                
-                // Show loading state
-                link.html('<span class="spinner-border spinner-border-sm" role="status"></span> SENDING...');
-                
-                // Make the request
-                $.get(link.attr('href'))
-                    .done(function(response) {
-                        if (response.success) {
-                            // Show success message
-                            Swal.fire({
-                                title: 'CODE RESENT',
-                                text: response.message,
-                                icon: 'success',
-                                timer: 3000,
-                                showConfirmButton: false,
-                                background: 'linear-gradient(135deg, #ffffff, #f8f9fa)',
-                                backdrop: `
-                                    rgba(0,0,0,0.5)
-                                    url("/images/robot-verify.gif")
-                                    center top
-                                    no-repeat
-                                `
-                            });
-                            
-                            // Update the verification code display
-                            if (response.new_token) {
-                                $('.verification-code').text(response.new_token);
-                                $('input[name="token"]').val(response.new_token);
-                                
-                                // Add visual feedback
-                                const codeElement = $('.verification-code');
-                                codeElement.css('transform', 'scale(1.1)');
-                                setTimeout(function() {
-                                    codeElement.css('transform', 'scale(1)');
-                                }, 300);
-                            }
-                        }
-                    })
-                    .fail(function() {
-                        showError('Failed to resend code. Please try again later.');
-                    })
-                    .always(function() {
-                        // Restore original text after 1 second
-                        setTimeout(function() {
-                            link.html(originalHtml);
-                        }, 1000);
-                    });
-            });
-            
-            // Function to show error messages
-            function showError(message) {
-                $('#toastMessage').text(message);
-                errorToast.show();
-                
-                // Add shake animation to form
-                $('#verifyForm').addClass('animate__animated animate__headShake');
-                setTimeout(function() {
-                    $('#verifyForm').removeClass('animate__animated animate__headShake');
-                }, 1000);
+       $(document).ready(function() {
+    // Initialize Bootstrap Toast
+    const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+    
+    // Auto-focus on the verification code input
+    $('#verificationCode').focus();
+    
+    // Input validation - only allow numbers and limit to 6 digits
+    $('#verificationCode').on('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 6) {
+            this.value = this.value.slice(0, 6);
+        }
+    });
+    
+    // Form submission handler
+    $('#verifyForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = $('#verifyBtn');
+        const btnText = $('#btnText');
+        const form = $(this);
+        const codeInput = $('#verificationCode');
+        
+        // Validate input
+        if (codeInput.val().length !== 6) {
+            showError('Please enter a complete 6-digit code');
+            codeInput.focus();
+            return false;
+        }
+        
+        // Show loading state
+        btn.prop('disabled', true);
+        btnText.html('VERIFYING... <span class="spinner-track"></span>');
+        
+        // Submit form via AJAX
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: form.serialize(),
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.redirect) {
+                    // Success - redirect to dashboard
+                    btnText.html('<i class="mdi mdi-check-circle"></i> VERIFIED!');
+                    btn.removeClass('btn-verify').addClass('btn-success');
+                    
+                    setTimeout(function() {
+                        window.location.href = response.redirect;
+                    }, 1000);
+                } else if (response.error) {
+                    showError(response.error);
+                    btn.prop('disabled', false);
+                    btnText.text('VERIFY IDENTITY');
+                }
+            },
+            error: function(xhr) {
+                let errorMessage = 'An error occurred during verification.';
+                if (xhr.status === 422) {
+                    // Laravel validation errors
+                    const errors = xhr.responseJSON.errors;
+                    errorMessage = Object.values(errors)[0][0];
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                showError(errorMessage);
+            },
+            complete: function() {
+                if (!btn.hasClass('btn-success')) {
+                    setTimeout(function() {
+                        btn.prop('disabled', false);
+                        btnText.text('VERIFY IDENTITY');
+                    }, 1500);
+                }
             }
-            
-            // Add scanning animation to verification code
-            setInterval(function() {
-                $('.verification-code').toggleClass('scanning');
-            }, 2000);
         });
+    });
+    
+    // Rest of your code (resend link handler, etc.)
+    // ...
+});
     </script>
 </body>
 </html>
