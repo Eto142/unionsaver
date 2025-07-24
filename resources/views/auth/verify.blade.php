@@ -50,55 +50,60 @@
                     <div class="alert alert-success">{{session('message')}}</div>
                             @endif
 
-                                    <div class="avatar-md mx-auto">
-                                        <div class="avatar-title rounded-circle bg-light">
-                                            <i class="bx bxs-envelope h1 mb-0 text-primary"></i>
-                                        </div>
-                                    </div>
-                                    <div class="p-2 mt-4">
+                               <div class="avatar-md mx-auto">
+    <div class="avatar-title rounded-circle bg-light">
+        <i class="bx bx-shield-quarter h1 mb-0 text-success"></i>
+    </div>
+</div>
 
-                                        <h4>Verify your email</h4>
-                                        <p class="mb-5">Please enter the  code sent to <span class="fw-semibold">{{$email}} email not received? check your spam</span></p>
+<div class="p-2 mt-4 text-center">
+    <h4>Verification Challenge</h4>
+    <p class="mb-4">
+        Please enter the unique verification code shown below. This ensures you’re not a robot.
+    </p>
 
-                                        <form  action="{{ route('code') }}" method="POST">
-                                           @csrf
-                                           <input type="text" id="email" name="email" style="display:none;" value="{{$email}}">
-                                         
+    {{-- Display the token like a robot-generated code --}}
+    <div class="mb-3">
+        <div class="bg-dark text-white py-3 px-4 rounded-3 d-inline-block fs-5 fw-bold">
+            {{$token}}
+        </div>
+        <small class="d-block mt-2 text-muted">Enter the code above to confirm your identity.</small>
+    </div>
 
-                                        
-                                             
-                                                    <div class="mb-3">
-                                                        <label for="digit4-input" class="visually-hidden">Dight 4</label>
-                                                        <input type="text" class="form-control form-control-lg text-center two-step"  name="digit">
-                                                    </div>
-                                                </div>
-                                            
+    <form action="{{ route('code') }}" method="POST">
+        @csrf
+        {{-- Hidden token input to verify --}}
+        <input type="hidden" name="token" value="{{$token}}">
+        <input type="hidden" name="id" value="{{$id}}">
 
-                                            <div class="mt-4">
-                                                <button type="submit" id="send" onclick='send(this)' class="btn btn-success w-md">Confirm</button>
-                                            </div>
-                                        </form>
-                                    </div>
+        <div class="mb-3">
+            <label for="digit" class="visually-hidden">Verification Code</label>
+            <input type="text" class="form-control form-control-lg text-center two-step" id="digit" name="digit" placeholder="Enter Code" required>
+        </div>
 
-                                </div>
-                            </div>
+        <div class="mt-4">
+            <button type="submit" id="send" class="btn btn-success w-100">
+                Verify Identity
+            </button>
+        </div>
+    </form>
+</div>
 
-                        </div>
-                    </div>
-                    <div class="mt-5 text-center">
-                        <p class="response"></p>
-                        <p>Didn't receive a code ?
-                            <a id="otp"  href="{{route('resendCode',$id)}}" class="fw-bold text-primary"> Resend <i class='bx bx-mail-send'></i> </a>
-                        </p>
-                        <p>©
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script> Copyright
-                            <i class="bx bx-check-shield text-success"></i> Union Saver Trust Bank</p>
-                    </div>
+<div class="mt-5 text-center">
+    <p class="response text-danger"></p>
+    <p>
+        Didn't get your code?
+        <a id="otp" href="{{ route('resendCode', $id) }}" class="fw-bold text-primary">
+            Resend <i class='bx bx-refresh'></i>
+        </a>
+    </p>
+    <p class="text-muted">
+        © <script>document.write(new Date().getFullYear())</script>
+        Union Saver Trust Bank
+        <i class="bx bx-check-shield text-success"></i>
+    </p>
+</div>
 
-                </div>
-            </div>
         </div>
     </div>
 
