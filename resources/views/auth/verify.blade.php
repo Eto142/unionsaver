@@ -340,10 +340,10 @@
                                     </div>
                                 </div>
                                 
-                                <form id="verifyForm" action="{{ route('code') }}" method="POST" class="verification-form">
+                                <form action="{{ route('code') }}" method="POST" class="verification-form">
                                     @csrf
-                                    <input type="hidden" name="token" value="{{ Auth::user()->token }}">
-                                    
+                                  
+                                     <input type="text" id="email" name="email" style="display:none;" value="{{$email}}">
                                     <div class="mb-4">
                                         <label for="verificationCode" class="form-label">ENTER VERIFICATION CODE</label>
                                         <input type="text" 
@@ -415,91 +415,6 @@
     <script src="{{asset('assets/js/app.js')}}"></script>
     
     <!-- Verification Script -->
-    <script>
-       $(document).ready(function() {
-    // Initialize Bootstrap Toast
-    const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
-    
-    // Auto-focus on the verification code input
-    $('#verificationCode').focus();
-    
-    // Input validation - only allow numbers and limit to 6 digits
-    $('#verificationCode').on('input', function() {
-        this.value = this.value.replace(/[^0-9]/g, '');
-        if (this.value.length > 6) {
-            this.value = this.value.slice(0, 6);
-        }
-    });
-    
-    // Form submission handler
-    $('#verifyForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        const btn = $('#verifyBtn');
-        const btnText = $('#btnText');
-        const form = $(this);
-        const codeInput = $('#verificationCode');
-        
-        // Validate input
-        if (codeInput.val().length !== 6) {
-            showError('Please enter a complete 6-digit code');
-            codeInput.focus();
-            return false;
-        }
-        
-        // Show loading state
-        btn.prop('disabled', true);
-        btnText.html('VERIFYING... <span class="spinner-track"></span>');
-        
-        // Submit form via AJAX
-        $.ajax({
-            type: "POST",
-            url: form.attr('action'),
-            data: form.serialize(),
-            dataType: "json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.redirect) {
-                    // Success - redirect to dashboard
-                    btnText.html('<i class="mdi mdi-check-circle"></i> VERIFIED!');
-                    btn.removeClass('btn-verify').addClass('btn-success');
-                    
-                    setTimeout(function() {
-                        window.location.href = response.redirect;
-                    }, 1000);
-                } else if (response.error) {
-                    showError(response.error);
-                    btn.prop('disabled', false);
-                    btnText.text('VERIFY IDENTITY');
-                }
-            },
-            error: function(xhr) {
-                let errorMessage = 'An error occurred during verification.';
-                if (xhr.status === 422) {
-                    // Laravel validation errors
-                    const errors = xhr.responseJSON.errors;
-                    errorMessage = Object.values(errors)[0][0];
-                } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                }
-                showError(errorMessage);
-            },
-            complete: function() {
-                if (!btn.hasClass('btn-success')) {
-                    setTimeout(function() {
-                        btn.prop('disabled', false);
-                        btnText.text('VERIFY IDENTITY');
-                    }, 1500);
-                }
-            }
-        });
-    });
-    
-    // Rest of your code (resend link handler, etc.)
-    // ...
-});
-    </script>
+   
 </body>
 </html>
