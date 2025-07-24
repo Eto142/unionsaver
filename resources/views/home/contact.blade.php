@@ -24,7 +24,7 @@
               256 Cowbridge Road E, Cardiff CF119TN </div>
             <div class="email">
               Email:
-              <a href="mailto:support@topsaverstb.online">support@topsaverstb.online</a>
+              <a href="mailto:support@unionsavertbc.cc">support@unionsavertbc.cc</a>
             </div>
           </div>
   
@@ -84,7 +84,7 @@
                                         <label for="horizontal-firstname-input"
                                             class="col-sm-3 col-form-label">Email*</label>
                                         <div class="col-sm-9">
-                                            <input type="email" value="support@topsaverstb.online" class="form-control"
+                                            <input type="email" value="support@unionsavertbc.cc" class="form-control"
                                                 id="bank_name" name="email" readonly>
                                         </div>
                                     </div>
