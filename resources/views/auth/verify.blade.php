@@ -330,7 +330,7 @@
                                 </div>
                                 
                                 <div class="text-center mb-4">
-                                    <h5 class="text-muted mb-3">WELCOME, {{ strtoupper(Auth::user()->name) }}</h5>
+                                    <h5 class="text-muted mb-3">WELCOME, {{ strtoupper(Auth::user()->first_name) }}</h5>
                                     <p class="text-muted">Your verification token:</p>
                                 </div>
                                 
