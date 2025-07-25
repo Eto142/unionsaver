@@ -9,7 +9,11 @@
             <div class="banner-section">
                 <div class="main-slider-carousel owl-carousel owl-theme" style="height:620px;">
     
-                    <div class="slide" data-bg-image="https://ofmetro.com//front/images/main-slider/intro-1.jpg" style="height:620px;">
+                   <div class="slide position-relative" data-bg-image="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80" style="height:620px; background-size: cover; background-position: center;">
+
+  <!-- Light overlay to brighten image -->
+  <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(255,255,255,0.2); z-index: 1;"></div>
+
                         <div class="auto-container w-100">
                             <div class="row clearfix">
                                 <!-- Content Column -->
