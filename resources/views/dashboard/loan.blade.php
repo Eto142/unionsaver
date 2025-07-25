@@ -147,7 +147,7 @@
         ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Copyright © Wide Star Standard Bank 2024</p>
+                <p>Copyright © Union Saver Trust Bank 2024</p>
             </div>
         </div>
         <!--**********************************
