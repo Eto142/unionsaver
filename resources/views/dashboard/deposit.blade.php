@@ -1,5 +1,5 @@
 @include('dashboard.header')
-
+      <br>
 <div class="content-body">
             <!-- row -->
             <div class="container-fluid">
@@ -49,50 +49,15 @@
                                         <span class="fs-20 text-black font-w500 me-3 mb-3">{{Auth::user()->a_number}}</span>
                                     </div>
 
-
-
                                     
                                     <div class="card-body">
                                         <div class="row align-items-center">
-                                            <!--<div class="col-xl-3 mb-3 col-xxl-6 col-sm-6">-->
-                                            <!--    <a class="btn btn-outline-primary rounded d-block btn-lg" data-bs-toggle="modal" data-bs-target="#crypto">+Crypto Deposit</a>-->
-                                            <!--     <div class="modal fade" id="crypto">-->
-                                            <!--        <div class="modal-dialog modal-dialog-centered" role="document">-->
-                                            <!--            <div class="modal-content">-->
-                                            <!--                <div class="modal-header">-->
-                                            <!--                    <h5 class="modal-title">Crypto Deposit</h5>-->
-                                            <!--                    <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span>-->
-                                            <!--                    </button>-->
-                                            <!--                </div>-->
-                                            <!--                <div class="modal-body">-->
-                                            <!--                    <div class="alert alert-info mt-3"><small>-->
-                                            <!--                        <i class="fa fa-info-circle"></i>&nbsp;Copy the address below and click 'Proceed' to complete action</small></div>-->
-                                            <!--                    <form method="POST" action="https://moonpay.com">-->
-                                            <!--                        <p id="server"></p>-->
-                                            <!--                        <div id="content-one">-->
-                                            <!--                            <div class="input-group mb-3 input-success-o">-->
-                                            <!--                                <span class="input-group-text search_icon copy" id="copy-addr" data-clipboard-target="#wallet_addr"><i class="fa fa-copy"></i></label></span>-->
-                                            <!--                                <input type="text" class="form-control" id="wallet_addr" value="1FpSrZ5NNLzGeX7384xWmrdqixt1UGPJxd" readonly>-->
-                                            <!--                            </div>-->
-                                
-                                            <!--                            <button id="wait" class="btn btn-primary w-100">Proceed to Buy Crypto</button>-->
-                                            <!--                        </div>   -->
-                                            <!--                    </form>-->
-                                            <!--                </div>-->
-                                            <!--                <div class="modal-footer">-->
-                                            <!--                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>-->
-                                            <!--                </div>-->
-                                            <!--            </div>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
-
-                                            
+                                           
 
                                             <div class="col-xl-12 mb-3 col-xxl-12 col-sm-12">
                                                 <a class="btn btn-outline-primary rounded d-block btn-lg" data-bs-toggle="modal" data-bs-target="#fiat">Mobile Check Deposit</a>
                                                 <br>
-                                                <a class="btn btn-outline-primary rounded d-block btn-lg" href="{{route('crypto_deposit')}}">Crypto Deposit</a> 
+                            
                                                 <div class="modal fade" id="fiat">
                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                         <div class="modal-content">
@@ -102,7 +67,7 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <center><img src="Cheque.png" width="100px"></center>
+                                                                <center><img src="{{asset('cheque.png')}}" width="150px"></center>
                                                                 
                                                                 {{-- <div class="alert alert-info">
                                                                     <p>To make Check deposits please contact us via email or live support as monetary policies and regulations may vary with different geographic locations.</p>

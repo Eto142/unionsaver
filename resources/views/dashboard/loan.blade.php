@@ -19,6 +19,8 @@
 							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 									</div>
          @endif
+         
+ 
             <!-- row -->
             <div class="container-fluid">
                 <div class="form-head mb-4"> 
@@ -145,7 +147,7 @@
         ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Copyright © Union Saver Trust Bank 2024</p>
+                <p>Copyright © Wide Star Standard Bank 2024</p>
             </div>
         </div>
         <!--**********************************

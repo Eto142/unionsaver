@@ -1,110 +1,862 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="">
-    <meta name="author" content="Union Saver Trust Bank">
-    <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Union Saver Trust Bank : ">
-    <meta property="og:title" content="Union Saver Trust Bank : ">
-    <meta property="og:description" content="Union Saver Trust Bank : ">
-    <meta property="og:image" content="favicon.png">
-    <meta name="format-detection" content="telephone=no">
-    <title>Union Saver Trust Bank - Dashboard</title>
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <link href="{{asset('vendor/jqvmap/css/jqvmap.min.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('vendor/chartist/css/chartist.min.css')}}">
-    <link href="{{asset('vendor/datatables/css/jquery.dataTables.min.css')}}" rel="stylesheet">
-    <link href="{{asset('vendor/bootstrap-select/dist/css/bootstrap-select.min.css')}}" rel="stylesheet">
-    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wide Star Standard Bank - Premium Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!-- toastr-->
-<link href="{{asset('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0- 
-alpha/css/bootstrap.css')}}" rel="stylesheet">
+    <!-- jQuery (Required for Toastr) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="{{asset('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')}}"></script>
+<!-- Toastr CSS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<link rel="stylesheet" type="text/css" 
-href="{{asset('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css')}}">
+<!-- Optional Bootstrap for Consistency -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css">
 
-<script src="{{asset('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js')}}"></script>
-
-
-
+<!-- Custom Toastr Style Enhancements -->
 <style>
-    /* Custom Toastr Styles */
+    .toast {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-radius: 10px !important;
+        padding: 14px 18px;
+        font-weight: 500;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
     .toast-success {
-        background-color: #51A351 !important; /* Custom success color */
+        background-color: #1d2c59 !important;
+        color: #fff;
     }
+
     .toast-warning {
-        background-color: #F89406 !important; /* Custom warning color */
+        background-color: #b52b2b !important;
+        color: #fff;
+    }
+
+    .toast-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .toast-message {
+        font-size: 14px;
     }
 </style>
 
+<!-- Trigger Toast After DOM Loads -->
+<script>
+    $(document).ready(function () {
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "7000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
 
-<style>
-.accordion {
- background-color: transparent;
- color: #444;
- cursor: pointer;
- padding: 18px;
- width: 100%;
- text-align: left;
- border: none;
- outline: none;
- transition: 0.4s;
-}
+        @if(Auth::user()->kyc_status == '1')
+            toastr.success(
+                `<div class="toast-title">✅ KYC Verified</div>
+                 <div class="toast-message">Your KYC status has been successfully verified.</div>`
+            );
+        @else
+            toastr.warning(
+                `<div class="toast-title">⚠️ KYC Pending</div>
+                 <div class="toast-message">Please verify your KYC document to access full features.</div>`
+            );
+        @endif
+    });
+</script>
 
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active,
-.accordion:hover {}
 
-/* Style the accordion panel. Note: hidden by default */
-.panel2 {
- padding: 0 18px;
- background-color: white;
- max-height: 0;
- overflow: hidden;
- transition: max-height 0.2s ease-out;
-}
-</style>
+
 
 
 
     <style>
-        .grid-container h6 {
-            font-size: 12px;
-            font-weight: bold;
+        :root {
+            --primary: #0e0a3dff;
+            --primary-light: #0e0a3dff;
+            --primary-dark: #0e0a3dff;
+            --secondary: #2c3e50;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #fd7e14;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 80px;
+            --header-height: 70px;
+            --card-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .withdraw-icon {
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bolder;
-            max-width: 50px;
-            margin: auto;
-        }
-
-        .grid-container-two .d-block span {
-            font-weight: bold;
-            font-size: 12px;
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            background-color: #f5f7fb;
+            color: #0e0a3dff;
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-bottom: 70px; /* Added for bottom header */
         }
 
         a {
-            color: unset;
+            text-decoration: none;
+            transition: var(--transition);
         }
+
+        /* Sidebar - Premium Version */
+        #sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            z-index: 1050;
+            border-right: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: var(--primary);
+            text-align: center;
+            min-height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header img {
+            max-width: 180px;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            color: var(--secondary);
+            padding: 14px 25px;
+            margin: 4px 15px;
+            border-radius: var(--card-radius);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(10, 92, 92, 0.08);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+            background-color: rgba(10, 92, 92, 0.1);
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            min-width: 25px;
+            transition: var(--transition);
+        }
+
+        /* Collapsed Sidebar */
+        #sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        #sidebar.collapsed .sidebar-header img {
+            max-width: 40px;
+        }
+
+        #sidebar.collapsed .nav-link span {
+            opacity: 0;
+            width: 0;
+            position: absolute;
+            transition: var(--transition);
+        }
+
+        #sidebar.collapsed .nav-link i {
+            font-size: 1.3rem;
+            margin-right: 0;
+        }
+
+        #sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 14px 0;
+        }
+
+        /* Main Content Area */
+        #main-content {
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        #sidebar.collapsed + #main-content {
+            margin-left: var(--sidebar-collapsed);
+        }
+
+        /* Top Navigation Bar */
+        .top-navbar {
+            height: var(--header-height);
+            background: var(--white);
+            padding: 0 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .toggle-btn {
+            border: none;
+            background: none;
+            font-size: 1.3rem;
+            color: var(--primary);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover {
+            background-color: rgba(10, 92, 92, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-img-container {
+            position: relative;
+        }
+
+        .profile-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+            transition: var(--transition);
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Bottom Header */
+        .bottom-header {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
+            z-index: 1030;
+            padding: 10px 0;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .bottom-header ul {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .bottom-header li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .link-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--secondary);
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+
+        .link-item:hover {
+            color: var(--primary);
+        }
+
+        .link-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .link-item a {
+            color: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: var(--white);
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: none;
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        /* Balance Display */
+        .balance-container {
+            position: relative;
+        }
+
+        .balance-display {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+            letter-spacing: 0.5px;
+            font-family: 'Roboto', sans-serif;
+            transition: var(--transition);
+        }
+
+        .balance-hidden {
+            letter-spacing: 3px;
+        }
+
+        /* Account Status */
+        .account-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-action {
+            background: var(--white);
+            border-radius: var(--card-radius);
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.03);
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary-light);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.3rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            box-shadow: 0 4px 10px rgba(10, 92, 92, 0.2);
+        }
+
+        .action-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        /* Transactions List */
+        .transaction-list {
+            border-radius: var(--card-radius);
+            overflow: hidden;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--white);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-item:hover {
+            background-color: rgba(10, 92, 92, 0.03);
+        }
+
+        .transaction-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .icon-deposit {
+            background: linear-gradient(135deg, var(--success) 0%, #218838 100%);
+        }
+
+        .icon-withdrawal {
+            background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        }
+
+        .icon-transfer {
+            background: linear-gradient(135deg, var(--info) 0%, #138496 100%);
+        }
+
+        .icon-crypto {
+            background: linear-gradient(135deg, var(--warning) 0%, #e0a800 100%);
+        }
+
+        .transaction-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .transaction-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .transaction-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .transaction-amount {
+            text-align: right;
+            font-weight: 600;
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        .amount-positive {
+            color: var(--success);
+        }
+
+        .amount-negative {
+            color: var(--danger);
+        }
+
+        .transaction-status {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(253, 126, 20, 0.1);
+            color: var(--warning);
+        }
+
+        .status-failed {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+
+        /* Charts and Analytics */
+        .chart-container {
+            height: 250px;
+            background: var(--light);
+            border-radius: var(--card-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Savings Goals */
+        .savings-goal {
+            margin-bottom: 20px;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .goal-title {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        .goal-amount {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1199px) {
+            #sidebar {
+                transform: translateX(-100%);
+                z-index: 1051;
+            }
+            
+            #sidebar.show {
+                transform: translateX(0);
+            }
+            
+            #main-content {
+                margin-left: 0;
+            }
+            
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 1050;
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+            }
+            
+            #sidebar.show + .overlay {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .quick-actions-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .balance-display {
+                font-size: 1.9rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .quick-actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .top-navbar {
+                padding: 0 15px;
+            }
+            
+            .dashboard-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .transaction-item {
+                flex-wrap: wrap;
+            }
+            
+            .transaction-amount {
+                width: 100%;
+                text-align: left;
+                margin-top: 10px;
+                margin-left: 57px;
+            }
+            
+            .balance-display {
+                font-size: 1.7rem;
+            }
+
+            /* Adjust bottom header for mobile */
+            .bottom-header {
+                padding: 8px 0;
+            }
+
+            .link-item i {
+                font-size: 1rem;
+            }
+
+            .link-item a {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadein {
+            animation: fadeIn 0.4s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
     </style>
-   
 </head>
+<body>
+    <!-- Premium Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-header" style="background-color:white">
+            <img src="{{asset('assets/images/logo.png')}}" alt="Bank Logo">
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{route('dashboard')}}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('deposit')}}">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Deposit</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('bank')}}">
+                        <i class="fas fa-university"></i>
+                        <span>Bank Transfers</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('crypto')}}">
+                        <i class="fab fa-bitcoin"></i>
+                        <span>Crypto Withdrawal</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('paypal')}}">
+                        <i class="fab fa-paypal"></i>
+                        <span>PayPal Withdrawals</span>
+                    </a>
+                </li>
+              
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('loan')}}">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span>Apply for Loan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('profile')}}">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Account Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('card')}}">
+                        <i class="fas fa-id-card"></i>
+                        <span>My Card</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-auto">
+                    <a class="nav-link" href="{{route('logOut')}}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay"></div>
+
+<!-- Main Content Area -->
+<main id="main-content">
+    <!-- Premium Top Navigation -->
+    <nav class="top-navbar">
+        <button class="toggle-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="d-flex align-items-center gap-3">
+            <div class="position-relative">
+                <!-- Empty for potential future elements -->
+            </div>
+            
+            <div class="user-profile">
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-semibold">{{Auth::user()->first_name}} {{Auth::user()->last_name}}</div>
+                    <small class="text-muted">Account: {{Auth::user()->a_number}} </small>
+                </div>
+                <div class="profile-img-container">
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" onclick="triggerFileInput()">
+                        <img src="{{ asset('uploads/display/' . (Auth::user()->display_picture ? Auth::user()->display_picture : 'avatar.jpg')) }}" class="profile-img" alt="Profile">
+                    </a>
+                    
+                    <form id="uploadForm" action="{{route('personal.dp')}}" method="POST" enctype="multipart/form-data" style="display: none;">
+                        @csrf
+                        <input type="file" id="profilePictureInput" name="image" accept="image/*" style="display: none;" onchange="uploadProfilePicture()">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+<!-- Bottom Left -->
+<div class="gtranslate_wrapper"></div>
+<script>
+  window.gtranslateSettings = {
+    "default_language": "en",
+    "detect_browser_language": true,
+    "wrapper_selector": ".gtranslate_wrapper",
+    "switcher_horizontal_position": "left",  // Changed from "right"
+    "switcher_vertical_position": "bottom",  // Changed from "top"
+    "alt_flags": {
+      "en": "usa",
+      "pt": "brazil",
+      "es": "colombia",
+      "fr": "quebec"
+    }
+  };
+</script>
+<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+
+            
 <!-- Smartsupp Live Chat script -->
 <script type="text/javascript">
 var _smartsupp = _smartsupp || {};
@@ -117,238 +869,3 @@ window.smartsupp||(function(d) {
 })(document);
 </script>
 <noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
-
-<body>
-
-    <script>
-        @if(Auth::user()->kyc_status=='1')
-         toastr.options =
-         {
-             "closeButton" : true,
-             "progressBar" : true
-         }
-                 toastr.success("Kyc status verified");
-       
-         @else
-         toastr.options =
-         {
-             "closeButton" : true,
-             "progressBar" : true
-         }
-         toastr.warning("kyc not verified, please verify your kyc document");
-         @endif
-       </script>
-        
-
-    <!--*******************
-        Preloader start
-    ********************-->
-    <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
-    </div>
-    <!--*******************
-        Preloader end
-    ********************-->
-
-    <!--**********************************
-        Main wrapper start
-    ***********************************-->
-    <div id="main-wrapper">
-
-        <!--**********************************
-            Nav header start
-        ***********************************-->
-        <div class="nav-header">
-            <a href="{{route('dashboard')}}" class="brand-logo">
-                <img class="" src="{{asset('assets/images/logo.png')}}" alt="" width="95px" >
-                <img class="logo-compact" src="{{asset('assets/images/logo.png')}}" alt="">
-                <img class="brand-title" src="{{asset('assets/images/logo.png')}}" alt="" >
-            </a>
-
-            <div class="nav-control">
-                <div class="hamburger">
-                    <span class="line"></span><span class="line"></span><span class="line"></span>
-                </div>
-            </div>
-        </div>
-        <!--**********************************
-            Nav header end
-        ***********************************-->
-
-
-        <!--**********************************
-            Header start
-        ***********************************-->
-        <div class="gtranslate_wrapper"></div> <script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","switcher_horizontal_position":"right","switcher_vertical_position":"top","alt_flags":{"en":"usa","pt":"brazil","es":"colombia","fr":"quebec"}}</script> <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
-        <div class="header">
-            <div class="header-content">
-                <nav class="navbar navbar-expand">
-                    <div class="collapse navbar-collapse justify-content-between">
-                        <div class="header-left">
-                            <div class="dashboard_bar">
-                                <div class="input-group search-area d-lg-inline-flex d-none">
-                                    <div class="input-group-append">
-                                        <button class="input-group-text search_icon search_icon"><i class="fa fa-pie-chart"></i></button>
-                                    </div>
-                                    <input type="text" class="form-control" placeholder="Search here...">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <ul class="navbar-nav header-right">
-                            <li class="nav-item dropdown header-profile">
-                                <a class="nav-link" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" onclick="triggerFileInput()">
-                                    <div class="header-info">
-                                        <span class="text-black">Hello, <strong>{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</strong></span>
-                                    </div>
-                                    <img src="{{ asset('uploads/display/' . (Auth::user()->display_picture ? Auth::user()->display_picture : 'avatar.jpg')) }}" width="20" alt="">
-                               
-                                    
-                                </a>
-                                
-                                <form id="uploadForm" action="{{route('personal.dp')}}" method="POST" enctype="multipart/form-data" style="display: none;">
-                                    @csrf
-                                    <input type="file" id="profilePictureInput" name="image" accept="image/*" style="display: none;" onchange="uploadProfilePicture()">
-                                </form>
-                                
-                                <script>
-                                    function triggerFileInput() {
-                                        document.getElementById('profilePictureInput').click();
-                                    }
-                                
-                                    function uploadProfilePicture() {
-                                        document.getElementById('uploadForm').submit();
-                                    }
-                                </script>
-                                
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="{{route('profile')}}" class="dropdown-item ai-icon">
-                                        <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                        <span class="ms-2">Profile </span>
-                                    </a>
-                            
-                                    <a href="{{route('transactions')}}" class="dropdown-item ai-icon">
-                                        <svg width="18" height="18" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M26.9165 1.41669H7.08317C5.58028 1.41669 4.13894 2.01371 3.07623 3.07642C2.01353 4.13912 1.4165 5.58046 1.4165 7.08335V17C1.4165 17.3757 1.56576 17.7361 1.83144 18.0018C2.09711 18.2674 2.45745 18.4167 2.83317 18.4167H9.9165V31.1667C9.91583 31.4376 9.99289 31.7031 10.1385 31.9316C10.2842 32.1601 10.4923 32.342 10.7382 32.4559C10.9847 32.5693 11.2585 32.6096 11.5273 32.5719C11.796 32.5343 12.0482 32.4202 12.254 32.2434L16.2915 28.7867L20.329 32.2434C20.5856 32.4628 20.9122 32.5834 21.2498 32.5834C21.5875 32.5834 21.9141 32.4628 22.1707 32.2434L26.2082 28.7867L30.2457 32.2434C30.5023 32.4628 30.8289 32.5834 31.1665 32.5834C31.3715 32.5819 31.574 32.5385 31.7615 32.4559C32.0074 32.342 32.2155 32.1601 32.3612 31.9316C32.5068 31.7031 32.5838 31.4376 32.5832 31.1667V7.08335C32.5832 5.58046 31.9862 4.13912 30.9234 3.07642C29.8607 2.01371 28.4194 1.41669 26.9165 1.41669ZM4.24984 15.5834V7.08335C4.24984 6.33191 4.54835 5.61124 5.0797 5.07988C5.61105 4.54853 6.33172 4.25002 7.08317 4.25002C7.83462 4.25002 8.55529 4.54853 9.08664 5.07988C9.61799 5.61124 9.9165 6.33191 9.9165 7.08335V15.5834H4.24984ZM29.7498 28.0925L27.129 25.84C26.8724 25.6205 26.5458 25.4999 26.2082 25.4999C25.8705 25.4999 25.5439 25.6205 25.2873 25.84L21.2498 29.2967L17.2123 25.84C16.9557 25.6205 16.6292 25.4999 16.2915 25.4999C15.9538 25.4999 15.6273 25.6205 15.3707 25.84L12.7498 28.0925V7.08335C12.7481 6.08812 12.4842 5.1109 11.9848 4.25002H26.9165C27.668 4.25002 28.3886 4.54853 28.92 5.07988C29.4513 5.61124 29.7498 6.33191 29.7498 7.08335V28.0925ZM26.9165 8.50002C26.9165 8.87574 26.7673 9.23608 26.5016 9.50175C26.2359 9.76743 25.8756 9.91669 25.4998 9.91669H16.9998C16.6241 9.91669 16.2638 9.76743 15.9981 9.50175C15.7324 9.23608 15.5832 8.87574 15.5832 8.50002C15.5832 8.1243 15.7324 7.76396 15.9981 7.49829C16.2638 7.23261 16.6241 7.08335 16.9998 7.08335H25.4998C25.8756 7.08335 26.2359 7.23261 26.5016 7.49829C26.7673 7.76396 26.9165 8.1243 26.9165 8.50002ZM26.9165 14.1667C26.9165 14.5424 26.7673 14.9027 26.5016 15.1684C26.2359 15.4341 25.8756 15.5834 25.4998 15.5834H16.9998C16.6241 15.5834 16.2638 15.4341 15.9981 15.1684C15.7324 14.9027 15.5832 14.5424 15.5832 14.1667C15.5832 13.791 15.7324 13.4306 15.9981 13.165C16.2638 12.8993 16.6241 12.75 16.9998 12.75H25.4998C25.8756 12.75 26.2359 12.8993 26.5016 13.165C26.7673 13.4306 26.9165 13.791 26.9165 14.1667ZM26.9165 19.8334C26.9165 20.2091 26.7673 20.5694 26.5016 20.8351C26.2359 21.1008 25.8756 21.25 25.4998 21.25H16.9998C16.6241 21.25 16.2638 21.1008 15.9981 20.8351C15.7324 20.5694 15.5832 20.2091 15.5832 19.8334C15.5832 19.4576 15.7324 19.0973 15.9981 18.8316C16.2638 18.5659 16.6241 18.4167 16.9998 18.4167H25.4998C25.8756 18.4167 26.2359 18.5659 26.5016 18.8316C26.7673 19.0973 26.9165 19.4576 26.9165 19.8334Z" fill="#858585"></path>
-										</svg>
-                                        <span class="ms-2">Transactions </span>
-                                    </a>
-                                    <a href="{{route('logOut')}}" class="dropdown-item ai-icon">
-                                        <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                        <span class="ms-2">Logout </span>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!--**********************************
-            Header end ti-comment-alt
-        ***********************************-->
-
-        <!--**********************************
-            Sidebar start
-        ***********************************-->
-        <div class="deznav">
-            <div class="deznav-scroll">
-                <ul class="metismenu" id="menu">
-                    <li><a class="" href="{{route('dashboard')}}" aria-expanded="false">
-                    <i class="fa fa-drivers-license-o"></i>
-							<span class="nav-text">Dashboard</span>
-						</a>
-
-                    </li>
-
-                    <li><a class="" href="{{route('deposit')}}" aria-expanded="false">
-                        <i class="fa fa-credit-card"></i>
-                                <span class="nav-text"> Deposit</span>
-                            </a>
-    
-                        </li>
-
-
-
-                    <li>
-                        <a class="" href="bank" aria-expanded="false">
-                        <i class="fa fa-bank"></i>
-							<span class="nav-text">Bank Transfer</span>
-						</a>
-
-                    </li>
-                    <li>
-                        <a class="" href="{{route('crypto')}}" aria-expanded="false">
-                        <i class="fa fa-google-wallet"></i>
-							<span class="nav-text">Crypto Withdrawal</span>
-						</a>
-
-                    </li>
-                    <li>
-                        <a class="" href="{{route('paypal')}}" aria-expanded="false">
-                        <i class="fa fa-paypal"></i>
-							<span class="nav-text">Paypal Withdrawal</span>
-						</a>
-
-                    </li>
-                    <li><a class="" href="{{route('skrill')}}" aria-expanded="false">
-                    <i class="fa fa-spinner"></i>
-							<span class="nav-text">Skrill Withdrawal</span>
-						</a>
-                    </li>
-{{-- 
-                    <li><a class="" href="" aria-expanded="false">
-                        <i class="fa fa-spinner"></i>
-                                <span class="nav-text">Cheque Deposit</span>
-                            </a>
-                        </li> --}}
-                    <li><a class="" href="{{route('loan')}}" aria-expanded="false">
-                    <i class="fa fa-pie-chart"></i>
-							<span class="nav-text">Apply for Loan</span>
-						</a>
-
-                    </li>
- 
-
-                    <li><a class="" href="{{route('profile')}}" aria-expanded="false">
-                        <i class="fa fa-user"></i>
-                                <span class="nav-text"> Account Profile</span>
-                            </a>
-    
-                        </li>
-                        
-
-
-                        <li><a class="" href="{{route('card')}}" aria-expanded="false">
-                            <i class="fa fa-id-card-o"></i>
-                                    <span class="nav-text"> My Card</span>
-                                </a>
-        
-                            </li>
-                            
-                              <li><a class="" href="{{route('card_withdrawal')}}" aria-expanded="false">
-                            <i class="fa fa-id-card-o"></i>
-                                    <span class="nav-text">Card Withdrawal</span>
-                                </a>
-        
-                            </li>
-
-
-                    <li><a class="" href="{{route('logOut')}}" aria-expanded="false">
-                    <i class="fa fa-cogs"></i>
-							<span class="nav-text">Logout</span>
-						</a>
-
-                    </li>
-
-                </ul>
-
-
-            </div>
-        </div>
-        
-      

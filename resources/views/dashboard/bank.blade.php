@@ -15,6 +15,7 @@
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
         @endif
+      
             <div class="container-fluid">
                 <h2 class="text-black font-w600 mb-0 me-auto mb-2 pe-3">Bank Transfer</h2>
                 
@@ -57,10 +58,16 @@
                                                     <input id="pin_account_number" type="text" name="bank_name" class="form-control" placeholder="Bank Name" >
                                                 </div>
 
-                                             <div class="form-group mb-3">
-                                                    <label>Routing Number</label>
-                                                    <input id="pin_account_number" type="text" name="routing_number" class="form-control" placeholder="Routing Number" >
+                                                <div class="form-group mb-3">
+                                                    <label>Branch Code</label>
+                                                    <input id="pin_account_number" type="text" name="branch_code" class="form-control" placeholder="Branch Code" >
                                                 </div> 
+                                                
+                                                 <div class="form-group mb-3">
+                                                    <label>Branch Name</label>
+                                                    <input id="pin_account_number" type="text" name="branch_name" class="form-control" placeholder="Branch Name(Optional)" >
+                                                </div> 
+
 
                                                 <div class="form-group mb-3">
                                                     <label>Transaction Pin</label>

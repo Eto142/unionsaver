@@ -157,7 +157,15 @@ class CustomAuthController extends Controller
         $data['user_credit']= Credit::where('user_id',Auth::user()->id)->where('status','1')->sum('amount');
         $data['user_debit']= Debit::where('user_id',Auth::user()->id)->where('status','1')->sum('amount');
         $data['balance'] = $data['user_deposits'] + $data['credit_transfers']+ $data['user_loans'] - $data['user_debit'] - $data['debit_transfers']- $data['user_card'];
-                    return view('dashboard.home',$data);
+                    
+            $data['transaction'] = Transaction::where('user_id', Auth::user()->id)
+                                        ->orderBy('created_at', 'desc')
+                                        ->get();
+                                        
+                                         $data['details'] = Card::where('user_id',Auth::user()->id)->get();
+        $data['detail'] = Card::where('user_id', Auth::user()->id)->first();
+        
+        return view('dashboard.home',$data);
                 }else{
                  
                     return redirect("verify/".Auth::user()->id);

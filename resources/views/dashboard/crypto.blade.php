@@ -15,6 +15,8 @@
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
         @endif
+        
+      
             <div class="container-fluid">
                 <h2 class="text-black font-w600 mb-0 me-auto mb-2 pe-3">Crypto Withdrawal</h2>
                 
