@@ -856,7 +856,21 @@
 </script>
 <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
 
-            
+      
+
+<style>
+  /* Ensure wrapper is still visible and scaled properly */
+  .gtranslate_wrapper {
+    position: fixed !important;
+    bottom: 10px !important;  /* push it slightly up from the bottom */
+    left: 10px !important;    /* stick it to the bottom-left corner */
+    transform: scale(0.50);  /* smaller than before */
+    transform-origin: bottom left;
+    z-index: 9999;
+  }
+</style>
+
+
 <!-- Smartsupp Live Chat script -->
 <script type="text/javascript">
 var _smartsupp = _smartsupp || {};
