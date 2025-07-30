@@ -344,12 +344,20 @@
                                             <h6 class="transaction-title">
                                                 {{ Str::limit($details->transaction_description, 25) }}
                                             </h6>
-                                            <p class="transaction-meta mb-0">
+                                            {{-- <p class="transaction-meta mb-0">
                                                 {{ $details->transaction }}
                                                 @if(!str_contains($details->transaction_description, 'From'))
                                                     • From •••{{ substr($details->account_number ?? '0000', -4) }}
                                                 @endif
-                                            </p>
+                                            </p> --}}
+
+                                              <p class="transaction-meta mb-0">
+        {{ $details->transaction }}
+        @if (!str_contains($details->transaction_description, 'From'))
+            • From •••{{ $details->masked_account_number }}
+        @endif
+    </p>
+                                            
                                         </div>
                                     </div>
                                     <div class="transaction-amount 

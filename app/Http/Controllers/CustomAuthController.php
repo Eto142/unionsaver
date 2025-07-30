@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+  use Illuminate\Support\Facades\Cache;
 use App\Models\Card;
 use App\Models\Loan;
 use App\Models\User;
@@ -164,7 +164,19 @@ class CustomAuthController extends Controller
                                         
                                          $data['details'] = Card::where('user_id',Auth::user()->id)->get();
         $data['detail'] = Card::where('user_id', Auth::user()->id)->first();
-        
+      
+
+$data['transaction'] = Transaction::where('user_id', Auth::user()->id)
+    ->orderBy('created_at', 'desc')
+    ->get();
+
+         // Attach masked account number to each transaction
+         foreach ($data['transaction'] as $txn) {
+             $txn->masked_account_number = Cache::rememberForever('masked_account_' . $txn->id, function () {
+                 return str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+    });
+}
+
         return view('dashboard.home',$data);
                 }else{
                  
