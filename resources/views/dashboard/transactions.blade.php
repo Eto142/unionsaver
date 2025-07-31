@@ -1,122 +1,401 @@
 @include('dashboard.header')
 <div class="content-body">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">Transaction History</h4>
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Filter Transactions
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                                <li><a class="dropdown-item" href="#">All Transactions</a></li>
-                                <li><a class="dropdown-item" href="#">Deposits</a></li>
-                                <li><a class="dropdown-item" href="#">Withdrawals</a></li>
-                                <li><a class="dropdown-item" href="#">Transfers</a></li>
-                            </ul>
-                        </div>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+            <h4 class="text-black font-w600 mb-3 mb-md-0">Transaction History</h4>
+            
+            <!-- Search Box -->
+            <div class="w-100 w-md-auto">
+                <div class="input-group search-box">
+                    <input type="text" id="transactionSearch" class="form-control" placeholder="Search transactions...">
+                    <button class="btn btn-outline-primary" type="button" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="transactionTable">
+                        <thead class="bg-light">
+                            {{-- <tr>
+                                <th width="70px" class="text-center">Type</th>
+                                <th>Details</th>
+                                <th width="180px" class="text-end pe-4">Amount</th>
+                                <th width="120px">Status</th>
+                            </tr> --}}
+                        </thead>
+                        <tbody>
+                            @foreach($transaction as $details)
+                            <tr>
+                                <!-- Transaction Type Icon -->
+                                <td class="text-center align-middle">
+                                    @if($details->transaction == 'Bank Transfer')
+                                    <div class="transaction-icon bg-success-light text-success">
+                                        <i class="fas fa-university"></i> <!-- Bank building icon -->
+                                    </div>
+                                    @elseif($details->transaction == 'Loan')
+                                    <div class="transaction-icon bg-primary-light text-primary">
+                                        <i class="fas fa-hand-holding-usd"></i> <!-- Hand holding money -->
+                                    </div>
+                                    @elseif($details->transaction == 'Card')
+                                    <div class="transaction-icon bg-dark-light text-dark">
+                                        <i class="fas fa-credit-card"></i> <!-- Credit card icon -->
+                                    </div>
+                                    @elseif($details->transaction == 'Crypto Withdrawal')
+                                    <div class="transaction-icon bg-warning-light text-warning">
+                                        <i class="fab fa-bitcoin"></i> <!-- Bitcoin icon -->
+                                    </div>
+                                    @elseif($details->transaction == 'Paypal Withdrawal')
+                                    <div class="transaction-icon bg-info-light text-info">
+                                        <i class="fab fa-cc-paypal"></i> <!-- PayPal logo -->
+                                    </div>
+                                    @elseif($details->transaction == 'Skrill Withdrawal')
+                                    <div class="transaction-icon bg-purple-light text-purple">
+                                        <i class="fas fa-money-bill-wave"></i> <!-- Money bill wave -->
+                                    </div>
+                                    @elseif($details->transaction == 'Deposit')
+                                    <div class="transaction-icon bg-success-light text-success">
+                                        <i class="fas fa-money-bill-transfer"></i> <!-- Money transfer -->
+                                    </div>
+                                    @elseif($details->transaction == 'Payment')
+                                    <div class="transaction-icon bg-danger-light text-danger">
+                                        <i class="fas fa-receipt"></i> <!-- Payment receipt -->
+                                    </div>
+                                    @else
+                                    <div class="transaction-icon bg-secondary-light text-secondary">
+                                        <i class="fas fa-exchange-alt"></i> <!-- Default transaction icon -->
+                                    </div>
+                                    @endif
+                                </td>
+                                
+                                <!-- Transaction Details -->
+                                <td class="align-middle">
+                                    <div class="d-flex flex-column">
+                                        <strong class="text-dark">{{$details->transaction}}</strong>
+                                        <span class="text-muted small">{{$details->transaction_description}}</span>
+                                        <small class="text-muted">{{$details->created_at}}</small>
+                                    </div>
+                                </td>
+                                
+                                <!-- Amount -->
+                                <td class="text-end align-middle pe-4">
+                                    <span class="font-w600 @if($details->transaction == 'Bank Transfer' || 
+                                                             $details->transaction == 'Paypal Withdrawal' || 
+                                                             $details->transaction == 'Skrill Withdrawal' || 
+                                                             $details->transaction == 'Crypto Withdrawal' ||
+                                                             $details->transaction == 'Payment') text-danger @else text-success @endif">
+                                        @if($details->transaction == 'Bank Transfer' || 
+                                            $details->transaction == 'Paypal Withdrawal' || 
+                                            $details->transaction == 'Skrill Withdrawal' || 
+                                            $details->transaction == 'Crypto Withdrawal' ||
+                                            $details->transaction == 'Payment')-
+                                        @elseif($details->transaction == 'Loan' || 
+                                               $details->transaction == 'Deposit')+
+                                        @endif 
+                                        {{Auth::user()->currency}}
+                                        {{number_format($details->transaction_amount, 2, '.', ',')}}
+                                    </span>
+                                </td>
+                                
+                                <!-- Status -->
+                                <td class="align-middle">
+                                    @if($details->transaction_status == '1')
+                                    <span class="badge bg-success-light text-success rounded-pill py-2 px-3">Completed</span>
+                                    @elseif($details->transaction_status == '0')
+                                    <span class="badge bg-warning-light text-warning rounded-pill py-2 px-3">Pending</span>
+                                    @elseif($details->transaction_status == '2')
+                                    <span class="badge bg-info-light text-info rounded-pill py-2 px-3">Processing</span>
+                                    @elseif($details->transaction_status == '3')
+                                    <span class="badge bg-secondary-light text-secondary rounded-pill py-2 px-3">Cancelled</span>
+                                    @else
+                                    <span class="badge bg-danger-light text-danger rounded-pill py-2 px-3">Failed</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                    <div class="text-muted small">
+                        Showing <span id="showingFrom">1</span> to <span id="showingTo">10</span> of <span id="totalRecords">{{ count($transaction) }}</span> entries
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-responsive-md">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Transaction</th>
-                                        <th>Details</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($transaction as $details)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="transaction-icon me-3">
-                                                    @if($details->transaction == 'Bank Transfer')
-                                                    <div class="bg-primary bg-opacity-10 p-2 rounded"><i class="fas fa-exchange-alt text-primary"></i></div>
-                                                    @elseif($details->transaction == 'Loan')
-                                                    <div class="bg-success bg-opacity-10 p-2 rounded"><i class="fas fa-hand-holding-usd text-success"></i></div>
-                                                    @elseif($details->transaction == 'Card')
-                                                    <div class="bg-info bg-opacity-10 p-2 rounded"><i class="fas fa-credit-card text-info"></i></div>
-                                                    @elseif($details->transaction == 'Crypto Withdrawal')
-                                                    <div class="bg-warning bg-opacity-10 p-2 rounded"><i class="fab fa-bitcoin text-warning"></i></div>
-                                                    @elseif($details->transaction == 'Paypal Withdrawal')
-                                                    <div class="bg-secondary bg-opacity-10 p-2 rounded"><i class="fab fa-paypal text-secondary"></i></div>
-                                                    @elseif($details->transaction == 'Skrill Withdrawal')
-                                                    <div class="bg-dark bg-opacity-10 p-2 rounded"><i class="fas fa-wallet text-dark"></i></div>
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    <h6 class="mb-0">{{ $details->transaction }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="text-dark">{{ Str::limit($details->transaction_description, 30) }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="font-w600 @if(in_array($details->transaction, ['Bank Transfer', 'Paypal Withdrawal', 'Skrill Withdrawal', 'Crypto Withdrawal'])) text-danger @elseif($details->transaction == 'Loan') text-success @endif">
-                                                @if(in_array($details->transaction, ['Bank Transfer', 'Paypal Withdrawal', 'Skrill Withdrawal', 'Crypto Withdrawal']))-@elseif($details->transaction == 'Loan')+@endif
-                                                {{ Auth::user()->currency }}{{ number_format($details->transaction_amount, 2) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if($details->transaction_status == '1')
-                                            <span class="badge light badge-success">Successful</span>
-                                            @elseif($details->transaction_status == '0')
-                                            <span class="badge light badge-warning">Pending</span>
-                                            @else
-                                            <span class="badge light badge-danger">Failed</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">{{ \Carbon\Carbon::parse($details->created_at)->format('M d, Y h:i A') }}</span>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <div class="show-entries">
-                                <span>Showing 1 to {{ count($transaction) }} of {{ count($transaction) }} entries</span>
-                            </div>
-                            <nav>
-                                <ul class="pagination pagination-circle">
-                                    <li class="page-item page-indicator">
-                                        <a class="page-link" href="javascript:void(0)">
-                                            <i class="fas fa-angle-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">2</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">3</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">4</a>
-                                    </li>
-                                    <li class="page-item page-indicator">
-                                        <a class="page-link" href="javascript:void(0)">
-                                            <i class="fas fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0" id="pagination">
+                            <!-- Pagination will be added here by JavaScript -->
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Include required CSS and JS -->
+
+
+<style>
+    /* Transaction Icon Styles */
+    .transaction-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 16px;
+    }
+    
+    /* Light background colors */
+    .bg-success-light { background-color: rgba(25, 135, 84, 0.1); }
+    .bg-primary-light { background-color: rgba(13, 110, 253, 0.1); }
+    .bg-warning-light { background-color: rgba(255, 193, 7, 0.1); }
+    .bg-info-light { background-color: rgba(13, 202, 240, 0.1); }
+    .bg-purple-light { background-color: rgba(111, 66, 193, 0.1); }
+    .bg-dark-light { background-color: rgba(33, 37, 41, 0.1); }
+    .bg-danger-light { background-color: rgba(220, 53, 69, 0.1); }
+    .bg-secondary-light { background-color: rgba(108, 117, 125, 0.1); }
+    
+    /* Table row hover effect */
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    /* Search box styling */
+    .search-box {
+        max-width: 300px;
+    }
+    
+    /* Status badge styling */
+    .badge {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .transaction-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 14px;
+        }
+        
+        .search-box {
+            max-width: 100%;
+        }
+        
+        .badge {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.75rem;
+        }
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Initialize variables
+    const rowsPerPage = 10;
+    const $table = $('#transactionTable');
+    const $rows = $table.find('tbody tr');
+    const totalRows = $rows.length;
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+    
+    // Initialize pagination
+    function initPagination() {
+        const $pagination = $('#pagination');
+        $pagination.empty();
+        
+        // Previous button
+        $pagination.append(`
+            <li class="page-item" id="prevPage">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+        `);
+        
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = 1;
+        let endPage = totalPages;
+        
+        if (totalPages > maxVisiblePages) {
+            startPage = Math.max(1, Math.min(
+                $('.page-item.active .page-link').data('page') - Math.floor(maxVisiblePages / 2),
+                totalPages - maxVisiblePages + 1
+            ));
+            endPage = startPage + maxVisiblePages - 1;
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            $pagination.append(`
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>
+            `);
+        }
+        
+        // Next button
+        $pagination.append(`
+            <li class="page-item" id="nextPage">
+                <a class="page-link" href="#" aria-label="Next">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        `);
+        
+        // Set first page as active
+        $('.page-link[data-page="1"]').parent().addClass('active');
+        updateShowingText(1);
+    }
+    
+    // Show specific page
+    function showPage(page) {
+        $rows.hide();
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        
+        $rows.slice(start, end).show();
+        
+        // Update active state in pagination
+        $('.page-item').removeClass('active');
+        $(`.page-link[data-page="${page}"]`).parent().addClass('active');
+        
+        // Disable prev/next buttons when appropriate
+        $('#prevPage').toggleClass('disabled', page === 1);
+        $('#nextPage').toggleClass('disabled', page === totalPages);
+        
+        updateShowingText(page);
+    }
+    
+    // Update showing X-Y of Z text
+    function updateShowingText(page) {
+        const start = (page - 1) * rowsPerPage + 1;
+        const end = Math.min(page * rowsPerPage, totalRows);
+        $('#showingFrom').text(start);
+        $('#showingTo').text(end);
+    }
+    
+    // Search functionality
+    $('#transactionSearch').on('keyup', function() {
+        const searchText = $(this).val().toLowerCase();
+        
+        $rows.each(function() {
+            const rowText = $(this).text().toLowerCase();
+            $(this).toggle(rowText.includes(searchText));
+        });
+        
+        // Update pagination after search
+        initPagination();
+    });
+    
+    // Pagination click handlers
+    $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        
+        if ($(this).parent().hasClass('disabled')) return;
+        
+        if ($(this).parent().attr('id') === 'prevPage') {
+            const currentPage = $('.page-item.active .page-link').data('page');
+            if (currentPage > 1) showPage(currentPage - 1);
+        } else if ($(this).parent().attr('id') === 'nextPage') {
+            const currentPage = $('.page-item.active .page-link').data('page');
+            if (currentPage < totalPages) showPage(currentPage + 1);
+        } else {
+            const page = $(this).data('page');
+            showPage(page);
+        }
+    });
+    
+    // Initialize everything
+    initPagination();
+    showPage(1);
+});
+</script>
+
+<!--**********************************
+    Scripts
+***********************************-->
+<!-- Required vendors -->
+<script src="{{asset('vendor/global/global.min.js')}}"></script>
+<script src="{{asset('vendor/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script>
+<script src="{{asset('vendor/chart.js/Chart.bundle.min.js')}}"></script>
+
+<!-- Datatable -->
+<script src="{{asset('vendor/datatables/js/jquery.dataTables.min.js')}}"></script>
+
+<script src="{{asset('js/custom.min.js')}}"></script>
+<script src="{{asset('js/deznav-init.js')}}"></script>
+<script src="{{asset('js/demo.js')}}"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!--<script src="js/styleSwitcher.js"></script>-->
+<script src="{{asset('js/app/app.js')}}"></script>
+
+<script>
+    (function($) {
+        var table = $('#example5').DataTable({
+            searching: false,
+            paging: true,
+            select: false,
+            //info: false,         
+            lengthChange: false
+
+        });
+        $('#example tbody').on('click', 'tr', function() {
+            var data = table.row(this).data();
+
+        });
+    })(jQuery);
+</script>
+
+
+</body>
+
+</html>
+
+
+
+<!-- Bottom Header -->
+<div class="bottom-header">
+    <ul>
+        <li>
+            <div class="link-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <a href="{{route('dashboard')}}">Overview</a>
+            </div>
+        </li>
+        <li>
+            <div class="link-item">
+                <i class="fas fa-exchange-alt"></i>
+                <a href="{{route('bank')}}">Transfer</a>
+            </div>
+        </li>
+        <li>
+            <div class="link-item">
+                <i class="fas fa-credit-card"></i>
+                <a href="{{route('card')}}">Cards</a>
+            </div>
+        </li>
+        <li>
+            <div class="link-item">
+                <i class="fas fa-history"></i>
+                <a href="{{route('transactions')}}">History</a>
+            </div>
+        </li>
+        <li>
+            <div class="link-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <a href="{{route('logOut')}}">Logout</a>
+            </div>
+        </li>
+    </ul>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
