@@ -250,7 +250,7 @@ public function debitUser(Request $request)
     $transaction->transaction_type = "Debit";
     $transaction->transaction = "Debit";
     $transaction->transaction_amount = $request['amount'];
-    $transaction->transaction_description =  "Credit Alert: ".  $request['description'] ;
+    $transaction->transaction_description =  "Debit Alert: ".  $request['description'] ;
     $transaction->transaction_status = 1;
     $transaction->save();
 

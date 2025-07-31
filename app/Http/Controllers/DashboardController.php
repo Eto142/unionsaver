@@ -367,8 +367,8 @@ public function UserOtp(Request $request)
 
     public function deposit()
     {
-        $data['credit_transfers']= Transaction::where('user_id',Auth::user()->id)->where('transaction_status','1')->sum('transaction_amount');
-        $data['debit_transfers']= Transaction::where('user_id',Auth::user()->id)->where('transaction_status','1')->sum('transaction_amount');
+        $data['credit_transfers']= Transaction::where('user_id',Auth::user()->id)->where('transaction_status','1')->where('transaction_type', 'Credit') ->sum('transaction_amount');
+        $data['debit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_status', '1') ->where('transaction_type', 'Debit')  ->sum('transaction_amount');// Include only debit transactions->sum('transaction_amount');
         $data['user_deposits']= Deposit::where('user_id',Auth::user()->id)->where('status','1')->sum('amount');
         $data['user_loans']= Loan::where('user_id',Auth::user()->id)->where('status','1')->sum('amount');
         $data['user_card']= Card::where('user_id',Auth::user()->id)->sum('amount');
@@ -1021,30 +1021,31 @@ public function personalDetails(Request $request)
 }
 
 
-    public function personalDp(Request $request)
+public function personalDp(Request $request)
 {
     $request->validate([
-        'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Max 2MB, image only
+        'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
     ]);
 
     $user = Auth::user();
 
-    if ($request->hasFile('image')) {
-        $file = $request->file('image');
-        $filename = 'dp_' . uniqid() . '.' . $file->getClientOriginalExtension();
-        
-        // Store securely using Laravel's storage system
-        $file->storeAs('profile_pictures', $filename, 'public');
-
-        // Optional: delete old picture if needed
-        // Storage::disk('public')->delete('profile_pictures/' . $user->display_picture);
-
-        $user->display_picture = $filename;
-        $user->save();
+    // Delete old image if it exists
+    if ($user->display_picture && file_exists(public_path('uploads/display/' . $user->display_picture))) {
+        unlink(public_path('uploads/display/' . $user->display_picture));
     }
 
-    return back()->with('status', 'Profile picture updated successfully');
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/display'), $filename);
+        $user->display_picture = $filename;
+    }
+
+    $user->save();
+
+    return back()->with('status', 'Profile picture updated successfully!');
 }
+
 
 
     public function getDeposit(Request $request)

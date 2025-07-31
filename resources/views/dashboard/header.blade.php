@@ -833,6 +833,7 @@
                         <img src="{{ asset('uploads/display/' . (Auth::user()->display_picture ? Auth::user()->display_picture : 'avatar.jpg')) }}" class="profile-img" alt="Profile">
                     </a>
                     
+                    
                     <form id="uploadForm" action="{{route('personal.dp')}}" method="POST" enctype="multipart/form-data" style="display: none;">
                         @csrf
                         <input type="file" id="profilePictureInput" name="image" accept="image/*" style="display: none;" onchange="uploadProfilePicture()">
